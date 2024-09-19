@@ -1,6 +1,24 @@
 import java.util.*;
 import java.util.Map.Entry;
 
+class order{
+    String name;
+    String category;
+    double product_price;
+    int quantity;
+    double order_price;
+    public order(String name,double product_price,String category,int quantity){
+        this.name = name;
+        this.category = category;
+        this.product_price = product_price;
+        this.quantity = quantity;
+    }
+    public double getOrderPrice(){
+        order_price = product_price*quantity;
+        return order_price;
+    }
+}
+
 public class Ecommerce{
     public static void main(String args[]){
 
@@ -8,19 +26,21 @@ public class Ecommerce{
         System.out.println(pl.map.get(1));
         
         HashMap<Integer,Integer> cart = new HashMap<>();
-        List<product> li = new ArrayList<>();
-        int total_price = 0;
+        List<List<order>> placedOrders = new ArrayList<>();
+        HashMap<Integer,Double> orderPrices = new HashMap<>();
+        
+        
 
         Scanner sc= new Scanner(System.in);
         int idx;
         do{
         System.out.println("--------------------------------------------------");
         System.out.println("1.View all products");
-        System.out.println("2.Search by category");
+        System.out.println("2.View by category");
         System.out.println("3.Add a product to cart");
         System.out.println("4.View cart");
         System.out.println("5.Make order");
-        System.out.println("6.View order");
+        System.out.println("6.View orders");
         System.out.println("7.Exit");
         System.out.println("--------------------------------------------------");
         System.out.println("Enter the index you want ");
@@ -28,14 +48,16 @@ public class Ecommerce{
         
         
             switch(idx){
-                case 1:System.out.println("Our products are:");
+                
+                case 1:
+                System.out.println("Our products are:");
                 if(pl.map.isEmpty()){
                     System.out.println("Sorry! all products are sold.");
                 }
                 else{
                     for(Entry<Integer,product> or:pl.map.entrySet()){
                         
-                        System.out.println("id:"+or.getKey()+"\nname:"+or.getValue().name+"\nprice:"+or.getValue().price+"\nstock left:"+or.getValue().stock);
+                        System.out.println("id:"+or.getKey()+"\tname:"+or.getValue().name+"\tprice:"+or.getValue().price+"\tstock left:"+or.getValue().stock);
                         
                     }
                 }
@@ -52,7 +74,7 @@ public class Ecommerce{
                     for(Entry<Integer,product> or:pl.map.entrySet()){
                         if(or.getValue().category.equals(category)){
                             
-                            System.out.println("id:"+or.getKey()+"\nname:"+or.getValue().name+"\nprice:"+or.getValue().price+"\nstock left:"+or.getValue().stock);
+                            System.out.println("id:"+or.getKey()+"\tname:"+or.getValue().name+"\tprice:"+or.getValue().price+"\tstock left:"+or.getValue().stock);
                         }
                     }
                 }
@@ -85,46 +107,59 @@ public class Ecommerce{
                 }while(flag!=1);
                 break;
 
-                case 4:System.out.println("Your cart:");
-                for(int orderid:cart.keySet()){
-                    product pr = pl.map.get(orderid);
-                    System.out.println("id:"+orderid+"\nname:"+pr.name+"\nprice:"+pr.price+"\ncategory:"+pr.category+"\nquantity:"+cart.get(orderid));
+                case 4:
+                if(cart.isEmpty()){
+                    System.out.println("Your cart is empty!");
+                }
+                else{
+                    System.out.println("Your cart:");
+                    for(int orderid:cart.keySet()){
+                        product pr = pl.map.get(orderid);
+                        System.out.println("id:"+orderid+"\tname:"+pr.name+"\tprice:"+pr.price+"\tcategory:"+pr.category+"\tquantity:"+cart.get(orderid));
+                    }
                 }
                 break;
 
-                case 5:System.out.println("Your order:");
-            
-                for(int orderid:cart.keySet()){
-                    product pr = pl.map.get(orderid);
-                    System.out.println("id:"+orderid+"\nname:"+pr.name+"\nprice:"+pr.price+"\ncategory:"+pr.category+"\nquantity:"+cart.get(orderid));
-                    li.add(new product(pr.name,pr.price,pr.category,cart.get(orderid)));
-                    total_price+=pr.price*cart.get(orderid);
-                }
-                System.out.println("Total price:"+total_price);
-                System.out.println("Please pay money!");
-                System.out.println("Have you paid money(yes-1/no-1):");
-                int paid = sc.nextInt();
-                if(paid==1){
-                    System.out.println("Your Order is placed!!");
+                case 5:
+                if(cart.isEmpty()){
+                    System.out.println("Your cart is empty!");
+                    System.out.println("Please add items to cart!");
                 }
                 else{
-                    System.out.println("Please pay the money.");
+                    System.out.println("Your order:");
+                    double total_price = 0;
+                    List<order> li = new ArrayList<>();
+                    for(int orderid:cart.keySet()){
+                        product pr = pl.map.get(orderid);
+                        li.add(new order(pr.name,pr.price,pr.category,cart.get(orderid)));
+                        System.out.println("id:"+orderid+"\tname:"+pr.name+"\tprice:"+pr.price+"\tcategory:"+pr.category+"\tquantity:"+cart.get(orderid)+"\torder price:"+li.get(li.size()-1).getOrderPrice());
+                        total_price+=li.get(li.size()-1).getOrderPrice();
+                    }
+                    System.out.println("Total price:"+total_price);
+                    cart.clear();
+                    placedOrders.add(li);
+                    orderPrices.put(placedOrders.size()-1,total_price);
                 }
+                break;
 
                 case 6:
-                if(li.isEmpty()){
+                if(placedOrders.isEmpty()){
                     System.out.println("Orders are empty!");
                 }
                 else{
-                    for(product pr : li){
-                        System.out.println("\nname:"+pr.name+"\nprice:"+pr.price+"\ncategory:"+pr.category+"\nquantity:"+pr.stock);
+                    for(int i=0;i<placedOrders.size();i++){
+                        List<order> ol = placedOrders.get(i);
+                        System.out.println("sno."+(i+1));
+                        for(order or : ol){
+                            System.out.println("name:"+or.name+"\tproduct price:"+or.product_price+"\tcategory:"+or.category+"\tquantity:"+or.quantity+"\torder price:"+or.getOrderPrice());
+                        }
+                        System.out.println("Total price:"+orderPrices.get(i));
                     }
-                    System.out.println("Total price:"+total_price);
+                    
                 }
                 
             }
         }while(idx!=7);
-  
         
     }
     
