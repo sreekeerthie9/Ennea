@@ -182,9 +182,17 @@ public class Ecommerce{
                         total_price+=li.get(li.size()-1).getOrderPrice();
                     }
                     System.out.println("Total price:"+total_price);
-                    cart.clear();
-                    placedOrders.add(li);
-                    orderPrices.put(placedOrders.size()-1,total_price);
+                    System.out.println("confirm order(yes-1/no-0)");
+                    int conf = sc.nextInt();
+                    if(conf==1){
+                        cart.clear();
+                        placedOrders.add(li);
+                        orderPrices.put(placedOrders.size()-1,total_price);
+                    }
+                    else{
+                        break;
+                    }
+                    
                 }
                 break;
 
