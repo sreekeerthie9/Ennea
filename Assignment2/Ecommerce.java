@@ -38,10 +38,11 @@ public class Ecommerce{
         System.out.println("1.View all products");
         System.out.println("2.View by category");
         System.out.println("3.Add a product to cart");
-        System.out.println("4.View cart");
-        System.out.println("5.Make order");
-        System.out.println("6.View orders");
-        System.out.println("7.Exit");
+        System.out.println("4.Remove from cart");
+        System.out.println("5.View cart");
+        System.out.println("6.Place order");
+        System.out.println("7.View orders");
+        System.out.println("8.Exit");
         System.out.println("--------------------------------------------------");
         System.out.println("Enter the index you want ");
         idx = sc.nextInt();
@@ -84,20 +85,21 @@ public class Ecommerce{
                 int flag = 0;
                 do{
                     System.out.println("Enter id from above product list:");
-                    int orderno = sc.nextInt();
-                    if(orderno > pl.map.size()){
+                    int id = sc.nextInt();
+                    if(id > pl.map.size()){
                         System.out.println("Sorry! there is no product with that id.");
                         continue;
                     }
                     else{
                         System.out.println("Enter the quantity:");
                         int q = sc.nextInt();
-                        if(q>pl.map.get(orderno).stock){
+                        if(q>pl.map.get(id).stock){
                             System.out.println("Sorry! There is not enough stock!");
                         }
-                        cart.put(orderno,q);
-                        pl.reduce(orderno,q);
-                        
+                        else{
+                            cart.put(id,q);
+                            pl.reduce(id,q);
+                        }    
                     }
                     System.out.println("do you want to add more products?(yes-1 or no-0)");
                     int add = sc.nextInt();
@@ -108,6 +110,50 @@ public class Ecommerce{
                 break;
 
                 case 4:
+                flag = 0;
+                do{
+                    System.out.println("Enter id from above product list to remove:");
+                    int id = sc.nextInt();
+                    
+                    if(!cart.containsKey(id)){
+                        System.out.println("Sorry! you did not add that product.");
+                        continue;
+                    }
+                    else{
+                        System.out.println("1.remove entire product");
+                        System.out.println("2.reduce the quantity of a produvt");
+                        System.out.println("Enter the option:");
+                        int opt = sc.nextInt();
+                        if(opt==1){
+                            pl.add(id,cart.get(id));
+                            cart.remove(id);
+                        }
+                        else if(opt==2){
+                            System.out.println("Enter the quantity to remove:");
+                            int q = sc.nextInt();
+                            
+                            int temp = cart.get(id);
+                            temp-=q;
+                            if(temp>0){
+                                cart.put(id,temp);
+                                pl.add(id,temp);
+                            }
+                            else{
+                                pl.add(id,cart.get(id));
+                                cart.remove(id);
+                            }    
+                        }  
+                    }
+                    System.out.println("do you want to remove more products?(yes-1 or no-0)");
+                    int rem = sc.nextInt();
+                    if(rem==0){
+                        flag = 1;
+                    }
+                }while(flag!=1);
+                break;
+
+
+                case 5:
                 if(cart.isEmpty()){
                     System.out.println("Your cart is empty!");
                 }
@@ -120,7 +166,7 @@ public class Ecommerce{
                 }
                 break;
 
-                case 5:
+                case 6:
                 if(cart.isEmpty()){
                     System.out.println("Your cart is empty!");
                     System.out.println("Please add items to cart!");
@@ -142,7 +188,7 @@ public class Ecommerce{
                 }
                 break;
 
-                case 6:
+                case 7:
                 if(placedOrders.isEmpty()){
                     System.out.println("Orders are empty!");
                 }
@@ -159,7 +205,7 @@ public class Ecommerce{
                 }
                 
             }
-        }while(idx!=7);
+        }while(idx!=8);
         
     }
     

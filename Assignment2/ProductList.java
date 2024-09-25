@@ -31,4 +31,11 @@ public class ProductList{
         System.out.println("There is no item with the given id");
        }
     }
+    public void add(int id,int quantity){
+        if(map.containsKey(id)){
+            product pr = map.get(id);
+            pr.stock+=quantity;
+            map.put(id,pr);
+       }
+    }
 }
