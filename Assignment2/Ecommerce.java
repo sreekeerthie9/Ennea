@@ -1,220 +1,272 @@
+
 import java.util.*;
-import java.util.Map.Entry;
+
+class product{
+    String name;
+    String category;
+    double price;
+    int stock;
+    public product(String name,double price,String category,int stock){
+        this.name = name;
+        this.price = price;
+        this.category = category;
+        this.stock = stock;
+    }
+}
 
 class order{
     String name;
     String category;
-    double product_price;
+    double productPrice;
     int quantity;
-    double order_price;
-    public order(String name,double product_price,String category,int quantity){
+    public order(String name,double productPrice,String category, int quantity){
         this.name = name;
         this.category = category;
-        this.product_price = product_price;
+        this.productPrice = productPrice;
         this.quantity = quantity;
     }
     public double getOrderPrice(){
-        order_price = product_price*quantity;
-        return order_price;
+        return productPrice*quantity;
     }
 }
 
-public class Ecommerce{
-    public static void main(String args[]){
+class productList{
+    HashMap<Integer,product> map = new HashMap<>();
 
-        ProductList pl = new ProductList();
-        System.out.println(pl.map.get(1));
-        
-        HashMap<Integer,Integer> cart = new HashMap<>();
+    public productList(){
+        map.put(1, new product("Laptop", 1000.0, "Electronics", 5));
+        map.put(2, new product("Headphones", 150.0, "Electronics", 10));
+        map.put(3, new product("T-shirt", 25.0, "Apparel", 50));
+        map.put(4, new product("Shoes", 60.0, "Footwear", 30));
+    }
+    public void reduce(int id, int quantity) {
+        if (map.containsKey(id)) {
+            product product = map.get(id);
+            product.stock -= quantity;
+        } else {
+            System.out.println("There is no item with the given id.");
+        }
+    }
+
+    public void add(int id, int quantity) {
+        if (map.containsKey(id)) {
+            product product = map.get(id);
+            product.stock += quantity;
+        }
+    }
+}
+
+public class ECommerce{
+    static Scanner scanner = new Scanner(System.in);
+    public static void main(String[] args) {
+        productList pl = new productList();
+        HashMap<Integer, Integer> cart = new HashMap<>();
         List<List<order>> placedOrders = new ArrayList<>();
-        HashMap<Integer,Double> orderPrices = new HashMap<>();
+        HashMap<Integer, Double> orderPrices = new HashMap<>();
         
-        
-
-        Scanner sc= new Scanner(System.in);
-        int idx;
-        do{
-        System.out.println("--------------------------------------------------");
-        System.out.println("1.View all products");
-        System.out.println("2.View by category");
-        System.out.println("3.Add a product to cart");
-        System.out.println("4.Remove from cart");
-        System.out.println("5.View cart");
-        System.out.println("6.Place order");
-        System.out.println("7.View orders");
-        System.out.println("8.Exit");
-        System.out.println("--------------------------------------------------");
-        System.out.println("Enter the index you want ");
-        idx = sc.nextInt();
-        
-        
-            switch(idx){
-                
+        int choice;
+        do {
+            System.out.println("--------------------------------------------------");
+            System.out.println("1. View all products");
+            System.out.println("2. View by category");
+            System.out.println("3. Add a product to cart");
+            System.out.println("4. Remove from cart");
+            System.out.println("5. View cart");
+            System.out.println("6. Place order");
+            System.out.println("7. View orders");
+            System.out.println("8. Exit");
+            System.out.println("--------------------------------------------------");
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+            
+            switch (choice) {
                 case 1:
-                System.out.println("Our products are:");
-                if(pl.map.isEmpty()){
-                    System.out.println("Sorry! all products are sold.");
-                }
-                else{
-                    for(Entry<Integer,product> or:pl.map.entrySet()){
-                        
-                        System.out.println("id:"+or.getKey()+"\tname:"+or.getValue().name+"\tprice:"+or.getValue().price+"\tstock left:"+or.getValue().stock);
-                        
-                    }
-                }
-                break;
+                    viewAllProducts(pl);
+                    break;
 
                 case 2:
-                System.out.println("Products in different category:");
-                List<String> categories = new ArrayList<>();
-                categories.add("Electronics");
-                categories.add("Apparel");
-                categories.add("Footwear");
-                for(String category:categories){
-                    System.out.println("Category:"+category);
-                    for(Entry<Integer,product> or:pl.map.entrySet()){
-                        if(or.getValue().category.equals(category)){
-                            
-                            System.out.println("id:"+or.getKey()+"\tname:"+or.getValue().name+"\tprice:"+or.getValue().price+"\tstock left:"+or.getValue().stock);
-                        }
-                    }
-                }
-                break;
+                    viewProductsByCategory(pl);
+                    break;
 
                 case 3:
-                int flag = 0;
-                do{
-                    System.out.println("Enter id from above product list:");
-                    int id = sc.nextInt();
-                    if(id > pl.map.size()){
-                        System.out.println("Sorry! there is no product with that id.");
-                        continue;
+                int id;
+                do {
+                    System.out.print("Enter ID of the product to add to cart: ");
+                    id = scanner.nextInt();
+        
+                    if (!pl.map.containsKey(id)) {
+                        System.out.println("Sorry! There is no product with that ID.");
+                        
                     }
                     else{
-                        System.out.println("Enter the quantity:");
-                        int q = sc.nextInt();
-                        if(q>pl.map.get(id).stock){
-                            System.out.println("Sorry! There is not enough stock!");
-                        }
-                        else{
-                            cart.put(id,q);
-                            pl.reduce(id,q);
-                        }    
+                        System.out.print("Enter the quantity: ");
+                        int quantity = scanner.nextInt();
+                        addProductToCart(pl, cart, id, quantity);
                     }
-                    System.out.println("do you want to add more products?(yes-1 or no-0)");
-                    int add = sc.nextInt();
-                    if(add==0){
-                        flag = 1;
-                    }
-                }while(flag!=1);
-                break;
+        
+                    System.out.print("Do you want to add more products? (yes-1/no-0): ");
+                } while (scanner.nextInt() == 1);
+                    break;
 
                 case 4:
-                flag = 0;
-                do{
-                    System.out.println("Enter id from above product list to remove:");
-                    int id = sc.nextInt();
-                    
-                    if(!cart.containsKey(id)){
-                        System.out.println("Sorry! you did not add that product.");
-                        continue;
+                
+                do {
+                    System.out.print("Enter ID of the product to remove from cart: ");
+                    id = scanner.nextInt();
+        
+                    if (!cart.containsKey(id)) {
+                        System.out.println("Sorry! You did not add that product.");
                     }
                     else{
-                        System.out.println("1.remove entire product");
-                        System.out.println("2.reduce the quantity of a produvt");
-                        System.out.println("Enter the option:");
-                        int opt = sc.nextInt();
-                        if(opt==1){
-                            pl.add(id,cart.get(id));
-                            cart.remove(id);
-                        }
-                        else if(opt==2){
+                        System.out.println("1. Remove entire product");
+                        System.out.println("2. Reduce the quantity of a product");
+                        System.out.print("Enter the option: ");
+                        int option = scanner.nextInt();
+                        int quantity = -1;
+                        if(option==2){
                             System.out.println("Enter the quantity to remove:");
-                            int q = sc.nextInt();
-                            
-                            int temp = cart.get(id);
-                            temp-=q;
-                            if(temp>0){
-                                cart.put(id,temp);
-                                pl.add(id,temp);
-                            }
-                            else{
-                                pl.add(id,cart.get(id));
-                                cart.remove(id);
-                            }    
-                        }  
+                            quantity = scanner.nextInt();
+                        }
+                        removeProductFromCart(cart,id,option,quantity);
                     }
-                    System.out.println("do you want to remove more products?(yes-1 or no-0)");
-                    int rem = sc.nextInt();
-                    if(rem==0){
-                        flag = 1;
-                    }
-                }while(flag!=1);
-                break;
-
+        
+                    System.out.print("Do you want to remove more products? (yes-1/no-0): ");
+                    
+                } while (scanner.nextInt() == 1);
+                    //removeProductFromCart(cart);
+                    break;
 
                 case 5:
-                if(cart.isEmpty()){
-                    System.out.println("Your cart is empty!");
-                }
-                else{
-                    System.out.println("Your cart:");
-                    for(int orderid:cart.keySet()){
-                        product pr = pl.map.get(orderid);
-                        System.out.println("id:"+orderid+"\tname:"+pr.name+"\tprice:"+pr.price+"\tcategory:"+pr.category+"\tquantity:"+cart.get(orderid));
-                    }
-                }
-                break;
+                    viewCart(cart, pl);
+                    break;
 
                 case 6:
-                if(cart.isEmpty()){
-                    System.out.println("Your cart is empty!");
-                    System.out.println("Please add items to cart!");
-                }
-                else{
-                    System.out.println("Your order:");
-                    double total_price = 0;
-                    List<order> li = new ArrayList<>();
-                    for(int orderid:cart.keySet()){
-                        product pr = pl.map.get(orderid);
-                        li.add(new order(pr.name,pr.price,pr.category,cart.get(orderid)));
-                        System.out.println("id:"+orderid+"\tname:"+pr.name+"\tprice:"+pr.price+"\tcategory:"+pr.category+"\tquantity:"+cart.get(orderid)+"\torder price:"+li.get(li.size()-1).getOrderPrice());
-                        total_price+=li.get(li.size()-1).getOrderPrice();
-                    }
-                    System.out.println("Total price:"+total_price);
-                    System.out.println("confirm order(yes-1/no-0)");
-                    int conf = sc.nextInt();
-                    if(conf==1){
-                        cart.clear();
-                        placedOrders.add(li);
-                        orderPrices.put(placedOrders.size()-1,total_price);
-                    }
-                    else{
-                        break;
-                    }
-                    
-                }
-                break;
+                    placeOrder(pl, cart, placedOrders, orderPrices);
+                    break;
 
                 case 7:
-                if(placedOrders.isEmpty()){
-                    System.out.println("Orders are empty!");
-                }
-                else{
-                    for(int i=0;i<placedOrders.size();i++){
-                        List<order> ol = placedOrders.get(i);
-                        System.out.println("sno."+(i+1));
-                        for(order or : ol){
-                            System.out.println("name:"+or.name+"\tproduct price:"+or.product_price+"\tcategory:"+or.category+"\tquantity:"+or.quantity+"\torder price:"+or.getOrderPrice());
-                        }
-                        System.out.println("Total price:"+orderPrices.get(i));
-                    }
-                    
-                }
-                
+                    viewOrders(placedOrders, orderPrices);
+                    break;
+
+                case 8:
+                    System.out.println("Exiting...");
+                    break;
+
+                default:
+                    System.out.println("Invalid choice. Please try again.");
             }
-        }while(idx!=8);
+        } while (choice != 8);
+    }
+    //for viewing all products
+    public static void viewAllProducts(productList pl) {
+        System.out.println("Our products are:");
+        if (pl.map.isEmpty()) {
+            System.out.println("Sorry! All products are sold.");
+        } else {
+            for (Map.Entry<Integer, product> entry : pl.map.entrySet()) {
+                product pr = entry.getValue();
+                System.out.printf("ID: %d\tName: %s\tPrice: %.2f\tStock left: %d%n",
+                                  entry.getKey(), pr.name, pr.price, pr.stock);
+            }
+        }
+    }
+    //viewing products category by category
+    public static void viewProductsByCategory(productList pl) {
+        List<String> categories = Arrays.asList("Electronics", "Apparel", "Footwear");
+        for (String category : categories) {
+            System.out.println("Category: " + category);
+            for (Map.Entry<Integer, product> entry : pl.map.entrySet()) {
+                if (entry.getValue().category.equals(category)) {
+                    product pr = entry.getValue();
+                    System.out.printf("ID: %d\tName: %s\tPrice: %.2f\tStock left: %d%n",
+                                      entry.getKey(), pr.name, pr.price, pr.stock);
+                }
+            }
+        }
+    }
+
+    public static void addProductToCart(productList pl, HashMap<Integer, Integer> cart, int id,int quantity) {
+        
+        product pr = pl.map.get(id);
+        if (quantity > pr.stock) {
+            System.out.println("Sorry! There is not enough stock!");
+        } else {
+            cart.put(id, cart.getOrDefault(id, 0) + quantity);    
+        }
+
+    }
+
+    public static void removeProductFromCart(HashMap<Integer, Integer> cart,int id,int option,int quantity) {
+       
+        if (option == 1) {
+            cart.remove(id);
+        } else if (option == 2) {
+            int currentQuantity = cart.get(id);
+            if (quantity >= currentQuantity) {
+                cart.remove(id);
+            } else {
+                cart.put(id, currentQuantity - quantity);
+            }
+        }
+
+    }
+
+    public static void viewCart(HashMap<Integer, Integer> cart, productList pl) {
+        if (cart.isEmpty()) {
+            System.out.println("Your cart is empty!");
+        } else {
+            System.out.println("Your cart:");
+            for (int orderId : cart.keySet()) {
+                product pr = pl.map.get(orderId);
+                System.out.printf("ID: %d\tName: %s\tPrice: %.2f\tCategory: %s\tQuantity: %d%n",
+                                  orderId, pr.name, pr.price, pr.category, cart.get(orderId));
+            }
+        }
+    }
+
+    public static void placeOrder(productList pl, HashMap<Integer, Integer> cart,List<List<order>> placedOrders, HashMap<Integer, Double> orderPrices) {
+        if (cart.isEmpty()) {
+            System.out.println("Your cart is empty! Please add items to cart!");
+            return;
+        }
+
+        System.out.println("Your order:");
+        double totalPrice = 0;
+        List<order> orderList = new ArrayList<>();
+        for (int orderId : cart.keySet()) {
+            product pr = pl.map.get(orderId);
+            int quantity = cart.get(orderId);
+            order or = new order(pr.name, pr.price, pr.category, quantity);
+            orderList.add(or);
+            pl.reduce(orderId, quantity);
+            totalPrice += or.getOrderPrice();
+            System.out.printf("ID: %d\tName: %s\tPrice: %.2f\tCategory: %s\tQuantity: %d\tOrder Price: %.2f%n",
+                              orderId, pr.name, pr.price, pr.category, quantity, or.getOrderPrice());
+        }
+        
+        System.out.printf("Total Price: %.2f%n", totalPrice);
+        
+        cart.clear();
+        placedOrders.add(orderList);
+        orderPrices.put(placedOrders.size() - 1, totalPrice);
         
     }
-    
+
+    public static void viewOrders(List<List<order>> placedOrders, HashMap<Integer, Double> orderPrices) {
+        if (placedOrders.isEmpty()) {
+            System.out.println("Orders are empty!");
+        } else {
+            for (int i = 0; i < placedOrders.size(); i++) {
+                List<order> orders = placedOrders.get(i);
+                System.out.println("Order No: " + (i + 1));
+                for (order or : orders) {
+                    System.out.printf("Name: %s\tProduct Price: %.2f\tCategory: %s\tQuantity: %d\tOrder Price: %.2f%n",
+                                      or.name, or.productPrice, or.category, or.quantity, or.getOrderPrice());
+                }
+                System.out.printf("Total Price: %.2f%n", orderPrices.get(i));
+            }
+        }
+    }
+
+
 }
