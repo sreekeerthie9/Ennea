@@ -1,0 +1,80 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Lato", serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(#222c31, #111d32);
+  color: #d9e2f1;
+  min-height: 100vh;
+  align-items: center;
+}
+
+.container {
+  padding: 20px;
+}
+
+.header {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.date-picker-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.date-picker-group .add-button {
+  margin-left: auto;
+}
+
+.search-bar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.table-container {
+  margin-top: 20px;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.confirm-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  gap: 10px;
+  flex-direction:  column;
+}
+
+.custom-input {
+  width: 100%; /* Make sure input takes full width of its container */
+  padding: 5px;
+  border-color: #1890ff;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 16px;
+  margin-left: 10px;
+
+}
+
+.custom-form-item-label .ant-form-item-label > label {
+  color: white !important;
+  font-weight: bold;
+  flex: 0 0 100px;
+}
+
+.confirm-button {
+  margin-top: 20px;
+}
