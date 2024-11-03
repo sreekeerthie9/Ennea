@@ -1,39 +1,19 @@
-// src/Page1.js
-import React, { useState, useEffect } from "react";
+import ProductItem from "../components/ProductItem";
+import { useQuery } from "@tanstack/react-query";
+import { fetchProducts } from "../util/http";
+import ErrorBlock from "../components/UI/ErrorBlock";
+import { useState, useRef } from "react";
 import { DatePicker, Table, Input, Button, Modal, Form } from "antd";
-import { useNavigate } from "react-router-dom";
 import moment from "moment";
-import axios from "axios";
 
 const { Search } = Input;
 
-const HomePage = () => {
+function HomePage() {
   const [startDate, setStartDate] = useState(moment().subtract(7, "days"));
   const [endDate, setEndDate] = useState(moment());
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [form] = Form.useForm();
-  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const fetchProducts = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get("https://dummyjson.com/products");
-      setProducts(response.data.products);
-      setFilteredProducts(response.data.products);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-      setLoading(false);
-    }
-  };
-
+  const searchElement = useRef();
   const onStartDateChange = (date) => {
     setStartDate(date);
   };
@@ -42,41 +22,26 @@ const HomePage = () => {
     setEndDate(date);
   };
 
-  const handleSearch = async (value) => {
-    setLoading(true);
-    try {
-      const response = await axios.get(
-        `https://dummyjson.com/products/search?q=${value}`
-      );
-      setFilteredProducts(response.data.products);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error searching products:", error);
-      setLoading(false);
-    }
-  };
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["products", { searchTerm: searchTerm }],
+    queryFn: ({ signal, queryKey }) =>
+      fetchProducts({ signal, ...queryKey[1] }),
+    enabled: searchTerm !== undefined,
+  });
 
-  const showModal = () => {
-    setModalVisible(true);
-  };
+  function handleSearch(value) {
+    setSearchTerm(value);
+  }
+  
 
-  const handleOk = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        console.log("New Product Details:", values);
-        form.resetFields();
-        setModalVisible(false);
-        navigate("/new", { state: values });
-      })
-      .catch((info) => {
-        console.log("Validation Failed:", info);
-      });
-  };
-
-  const handleCancel = () => {
-    setModalVisible(false);
-  };
+  if (isError) {
+    content = (
+      <ErrorBlock
+        title="An error occured"
+        message={error.info?.message || "Failed to fetch events."}
+      />
+    );
+  }
 
   const columns = [
     { title: "ID", dataIndex: "id", key: "id" },
@@ -85,70 +50,44 @@ const HomePage = () => {
     { title: "Price", dataIndex: "price", key: "price" },
   ];
 
-  return (
-    <div className="container">
-      <h1 className="header">Home</h1>
-      <div className="date-picker-group">
-        <DatePicker defaultValue={startDate} onChange={onStartDateChange} />
-        <DatePicker
-          defaultValue={endDate}
-          onChange={onEndDateChange}
-          disabledDate={(current) => current && current < startDate}
-        />
-        <Button type="primary" onClick={showModal} className="add-button">
-          Add New Product
-        </Button>
-      </div>
-      <div className="search-bar">
-        <Search
-          placeholder="Search products"
-          onSearch={handleSearch}
-          style={{ width: 400 }}
-        />
-      </div>
-
-      <div className="table-container">
-        <Table
-          columns={columns}
-          dataSource={filteredProducts}
-          rowKey="id"
-          loading={loading}
-        />
-      </div>
-      <Modal
-        title="Add New Product"
-        open={modalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <Form form={form} className="modal-form">
-          <Form.Item
-            name="title"
-            label="Title"
-            rules={[{ required: true, message: "Please input the title!" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="description"
-            label="Description"
-            rules={[
-              { required: true, message: "Please input the description!" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="price"
-            label="Price"
-            rules={[{ required: true, message: "Please input the price!" }]}
-          >
-            <Input type="number" />
-          </Form.Item>
-        </Form>
-      </Modal>
+  let content = (
+    <div className="table-container">
+      <Table
+        columns={columns}
+        dataSource={data}
+        rowKey="id"
+        loading={isLoading}
+      />
     </div>
   );
-};
+
+  return (
+    <>
+      <h2 style={{ fontWeight: "bold" }}>Welcome!</h2>
+
+      <section className="content-section" id="all-events-section">
+        <header style={{ alignItems: "center" }}>
+          <div className="date-picker-group">
+            <DatePicker defaultValue={startDate} onChange={onStartDateChange} />
+            <DatePicker
+              defaultValue={endDate}
+              onChange={onEndDateChange}
+              disabledDate={(current) => current && current < startDate}
+            />
+          </div>
+          <div className="search-bar">
+            <Search
+              placeholder="Search products"
+              onSearch={handleSearch}
+              ref={searchElement}
+              style={{ width: 400 }}
+            />
+          </div>
+        </header>
+        {content}
+      </section>
+    </>
+  );
+}
 
 export default HomePage;

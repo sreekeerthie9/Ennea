@@ -1,10 +1,11 @@
+
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: "Lato", serif;
+  font-family: 'Lato', serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: linear-gradient(#222c31, #111d32);
@@ -13,8 +14,124 @@ body {
   align-items: center;
 }
 
-.container {
-  padding: 20px;
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+h2{
+  text-align: center;
+  
+}
+
+.content-section{
+  margin: 3rem 0 6rem 0;
+  padding: 0 15%;
+}
+
+
+.product-list{
+  max-width: 60rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 3rem;
+}
+
+.custom-button.ant-button{
+  font: inherit;
+  cursor: pointer;
+  padding: 0.5rem 1.5rem;
+  border: none;
+  background-color: #e30d7c;
+  color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.26);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.custom-button.ant-btn:hover {
+  background-color: #e30d5b;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+}
+  
+.button-text {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  border: none;
+  color: #3f0c26;
+  border-radius: 4px;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.button-text:hover {
+  color: #7c184c;
+}
+
+#search-form input {
+  font: inherit;
+  padding: 0.5rem 1rem;
+  border-radius: 4px 0 0 4px;
+  border: none;
+  background: #fff;
+}
+
+#search-form button {
+  font: inherit;
+  padding: 0.5rem 1rem;
+  border-radius: 0 4px 4px 0;
+  border: none;
+  background: #b6cad5;
+  color: #1d161a;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+
+#product-form label {
+  display: block;
+  font-weight: bold;
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+  color: #3c4249;
+  text-transform: uppercase;
+}
+
+#product-form input,
+#product-form textarea {
+  font: inherit;
+  font-size: 1.1rem;
+  padding: 0.25rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+.controls-row {
+  display: flex;
+  gap: 2rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 2rem;
+}
+
+.table-container {
+  margin-top: 20px;
+}
+
+.search-bar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
 .header {
@@ -24,30 +141,13 @@ body {
 }
 
 .date-picker-group {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.date-picker-group .add-button {
-  margin-left: auto;
-}
-
-.search-bar {
-  display: flex;
   justify-content: center;
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
   margin-bottom: 20px;
 }
 
-.table-container {
-  margin-top: 20px;
-}
-
-.modal-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
 
 .confirm-form {
   display: flex;
@@ -59,7 +159,7 @@ body {
 }
 
 .custom-input {
-  width: 100%; /* Make sure input takes full width of its container */
+  width: 100%; 
   padding: 5px;
   border-color: #1890ff;
   border-radius: 8px;
