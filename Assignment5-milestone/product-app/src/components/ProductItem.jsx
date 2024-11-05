@@ -1,6 +1,7 @@
+import { Link } from "react-router-dom";
 import { styled } from "styled-components";
 
-const EventItemStyled = styled.article`
+const ProductItemStyled = styled.article`
   height: 100%;
   margin: 2rem 0;
   padding: 0;
@@ -75,7 +76,7 @@ export default function ProductItem({ product }) {
   //console.log(product);
 
   return (
-    <EventItemStyled>
+    <ProductItemStyled>
       <img src={image} alt={product.title} />
 
       <div className="product-item-content">
@@ -84,7 +85,10 @@ export default function ProductItem({ product }) {
         <p className="product-brand">Brand: {product.brand}</p>
         <p className="product-price">Price: ${product.price.toFixed(2)}</p>
         <p className="product-rating">★{product.rating}</p>
+        <Link to={`/products/${product.id}`} className="button">
+          View Details
+        </Link>
       </div>
-    </EventItemStyled>
+    </ProductItemStyled>
   );
 }

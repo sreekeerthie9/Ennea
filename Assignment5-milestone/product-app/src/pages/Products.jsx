@@ -5,12 +5,11 @@ import ProductItem from "../components/ProductItem";
 import { useParams } from "react-router-dom";
 
 function ProductsPage() {
-
   const params = useParams();
 
   const { data, isPending, isError, error } = useQuery({
     queryKey: ["products"],
-    queryFn: ({signal}) => fetchProducts({signal, categoryName:params.categoryName, searchTerm:params.searchTerm}),
+    queryFn: ({ signal }) => fetchProducts({ signal }),
   });
 
   let content;

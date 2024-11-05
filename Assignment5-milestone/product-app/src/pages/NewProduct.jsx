@@ -3,6 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Form, Input, Button, Modal } from "antd";
+import ErrorBlock from "../components/UI/ErrorBlock";
 
 function NewProduct() {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ function NewProduct() {
 
 
   function handleConfirm() {
-    mutate({ event: form.validateFields() });
+    mutate({ product: form.validateFields() });
   }
 
   return (
@@ -61,6 +62,7 @@ function NewProduct() {
         >
           {isPending? "Submitting..." : "Confirm and Create Product"}
         </Button>
+        {isError && <ErrorBlock title="Failed to add product" message={error.info?.message || "Unable to add product, try again later."}/>} 
       </Form>
     </div>
   );

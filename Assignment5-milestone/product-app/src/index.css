@@ -1,11 +1,10 @@
-
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: 'Lato', serif;
+  font-family: "Lato", serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: linear-gradient(#222c31, #111d32);
@@ -20,25 +19,23 @@ ul {
   padding: 0;
 }
 
-h2{
+h2 {
   text-align: center;
-  
 }
 
-.content-section{
+.content-section {
   margin: 3rem 0 6rem 0;
   padding: 0 15%;
 }
 
-
-.product-list{
+.product-list {
   max-width: 60rem;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
   gap: 3rem;
 }
 
-.custom-button.ant-button{
+.custom-button.ant-button {
   font: inherit;
   cursor: pointer;
   padding: 0.5rem 1.5rem;
@@ -56,7 +53,7 @@ h2{
   color: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
 }
-  
+
 .button-text {
   font: inherit;
   cursor: pointer;
@@ -91,7 +88,6 @@ h2{
   font-weight: bold;
   cursor: pointer;
 }
-
 
 #product-form label {
   display: block;
@@ -148,25 +144,23 @@ h2{
   margin-bottom: 20px;
 }
 
-
 .confirm-form {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 50vh;
   gap: 10px;
-  flex-direction:  column;
+  flex-direction: column;
 }
 
 .custom-input {
-  width: 100%; 
+  width: 100%;
   padding: 5px;
   border-color: #1890ff;
   border-radius: 8px;
   padding: 10px;
   font-size: 16px;
   margin-left: 10px;
-
 }
 
 .custom-form-item-label .ant-form-item-label > label {
@@ -177,4 +171,42 @@ h2{
 
 .confirm-button {
   margin-top: 20px;
+}
+
+#product-details header {
+  width: 40rem;
+  margin: 2rem auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#product-details header nav {
+  display: flex;
+  gap: 1rem;
+}
+
+#product-details header button,
+#product-details header a {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  color: #b6cad5;
+  border-radius: 4px;
+  font-weight: bold;
+  text-decoration: none;
+  padding: 0.25rem;
+}
+
+#product-details img {
+  max-width: 100%;
+  height: auto;
+  max-height: 200px;
+  margin: auto;
+  display: block;
+}
+
+#product-details-info {
+  padding: 0 3rem 3rem 3rem;
 }

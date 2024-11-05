@@ -1,10 +1,24 @@
-import ProductItem from "../components/ProductItem";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProducts } from "../util/http";
 import ErrorBlock from "../components/UI/ErrorBlock";
 import { useState, useRef } from "react";
-import { DatePicker, Table, Input, Button, Modal, Form } from "antd";
+import { DatePicker, Table, Input } from "antd";
 import moment from "moment";
+import { styled } from "styled-components";
+import { useNavigate } from "react-router-dom";
+
+const ViewDetailsButton = styled.button`
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  &:hover {
+    background-color: #0056b3;
+  }
+`;
 
 const { Search } = Input;
 
@@ -12,6 +26,7 @@ function HomePage() {
   const [startDate, setStartDate] = useState(moment().subtract(7, "days"));
   const [endDate, setEndDate] = useState(moment());
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
   const searchElement = useRef();
   const onStartDateChange = (date) => {
@@ -21,6 +36,10 @@ function HomePage() {
   const onEndDateChange = (date) => {
     setEndDate(date);
   };
+
+  function handleViewDetails(productId) {
+    navigate(`/products/${productId}`);
+  }
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["products", { searchTerm: searchTerm }],
@@ -32,7 +51,6 @@ function HomePage() {
   function handleSearch(value) {
     setSearchTerm(value);
   }
-  
 
   if (isError) {
     content = (
@@ -48,6 +66,15 @@ function HomePage() {
     { title: "Title", dataIndex: "title", key: "title" },
     { title: "Description", dataIndex: "description", key: "description" },
     { title: "Price", dataIndex: "price", key: "price" },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (_, record) => (
+        <ViewDetailsButton onClick={() => handleViewDetails(record.id)}>
+          View Details
+        </ViewDetailsButton>
+      ),
+    },
   ];
 
   let content = (

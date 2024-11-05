@@ -63,8 +63,20 @@ function MainNavigation() {
           >
             Products
           </NavLink>
+          <NavLink
+            to="/categories"
+            className={({ isActive }) =>
+              isActive ? classes.active : undefined
+            }
+          >
+            Categories
+          </NavLink>
         </nav>
-        <Button type="primary" onClick={showModal} className="custom-button ant-button">
+        <Button
+          type="primary"
+          onClick={showModal}
+          className="custom-button ant-button"
+        >
           Add New Product
         </Button>
       </StyledHeader>
