@@ -6,7 +6,7 @@ export async function fetchProducts({ signal, categoryName, searchTerm }) {
   let url = "https://dummyjson.com/products";
 
   if (searchTerm) {
-    url += "https://dummyjson.com/products/search?q=" + searchTerm;
+    url = "https://dummyjson.com/products/search?q=" + searchTerm;
   }
   if (categoryName) {
     url = "https://dummyjson.com/products/category/" + categoryName;

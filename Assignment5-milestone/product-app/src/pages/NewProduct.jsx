@@ -22,9 +22,9 @@ function NewProduct() {
     },
   });
 
-
-  function handleConfirm() {
-    mutate({ product: form.validateFields() });
+  async function handleConfirm() {
+    const values = await form.validateFields();
+    mutate({ product: values });
   }
 
   return (
@@ -60,9 +60,16 @@ function NewProduct() {
           onClick={handleConfirm}
           className="custom-button ant-button"
         >
-          {isPending? "Submitting..." : "Confirm and Create Product"}
+          {isPending ? "Submitting..." : "Confirm and Create Product"}
         </Button>
-        {isError && <ErrorBlock title="Failed to add product" message={error.info?.message || "Unable to add product, try again later."}/>} 
+        {isError && (
+          <ErrorBlock
+            title="Failed to add product"
+            message={
+              error.info?.message || "Unable to add product, try again later."
+            }
+          />
+        )}
       </Form>
     </div>
   );

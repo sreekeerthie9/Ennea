@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchProducts } from "../util/http";
 import ErrorBlock from "../components/UI/ErrorBlock";
 import { useState, useRef } from "react";
-import { DatePicker, Table, Input } from "antd";
+import { DatePicker, Table, Input,Button } from "antd";
 import moment from "moment";
 import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
@@ -23,19 +23,30 @@ const ViewDetailsButton = styled.button`
 const { Search } = Input;
 
 function HomePage() {
-  const [startDate, setStartDate] = useState(moment().subtract(7, "days"));
-  const [endDate, setEndDate] = useState(moment());
+  
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
+  const [startDate, setStartDate] = useState(moment().subtract(7, "days"));
+  const [endDate, setEndDate] = useState(moment());
 
-  const searchElement = useRef();
-  const onStartDateChange = (date) => {
+  const handleStartChange = (date) => {
     setStartDate(date);
   };
 
-  const onEndDateChange = (date) => {
+  const handleEndChange = (date) => {
     setEndDate(date);
   };
+
+  const handleSubmit = () => {
+    alert(
+      `Start Date: ${startDate.format("YYYY-MM-DD")} End Date: ${endDate.format(
+        "YYYY-MM-DD"
+      )}`
+    );
+  };
+
+
+  const searchElement = useRef();
 
   function handleViewDetails(productId) {
     navigate(`/products/${productId}`);
@@ -52,6 +63,7 @@ function HomePage() {
     setSearchTerm(value);
   }
 
+  let content;
   if (isError) {
     content = (
       <ErrorBlock
@@ -77,7 +89,7 @@ function HomePage() {
     },
   ];
 
-  let content = (
+  content = (
     <div className="table-container">
       <Table
         columns={columns}
@@ -95,12 +107,15 @@ function HomePage() {
       <section className="content-section" id="all-events-section">
         <header style={{ alignItems: "center" }}>
           <div className="date-picker-group">
-            <DatePicker defaultValue={startDate} onChange={onStartDateChange} />
+            <DatePicker defaultValue={startDate} onChange={ handleStartChange} />
             <DatePicker
               defaultValue={endDate}
-              onChange={onEndDateChange}
+              onChange={handleEndChange}
               disabledDate={(current) => current && current < startDate}
             />
+            <Button type="primary" onClick={handleSubmit}>
+              Submit
+            </Button>
           </div>
           <div className="search-bar">
             <Search
