@@ -103,6 +103,15 @@ function MainNavigation() {
           >
             <Input />
           </Form.Item>
+          <Form.Item name="category" label="Category">
+            <Input />
+          </Form.Item>
+          <Form.Item name="brand" label="Brand">
+            <Input />
+          </Form.Item>
+          <Form.Item name="image" label="Image URL">
+            <Input />
+          </Form.Item>
           <Form.Item
             name="description"
             label="Description"
@@ -117,6 +126,10 @@ function MainNavigation() {
             label="Price"
             rules={[{ required: true, message: "Please input the price!" }]}
           >
+            <Input type="number" />
+          </Form.Item>
+
+          <Form.Item name="rating" label="Rating">
             <Input type="number" />
           </Form.Item>
         </Form>

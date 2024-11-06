@@ -1,8 +1,8 @@
 import { createNewProduct, queryClient } from "../util/http";
 import { useMutation } from "@tanstack/react-query";
-import {useContext, useState} from "react";
+import { useContext, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Form, Input, Button, Modal } from "antd";
+import { Form, Input, Button, Modal, Descriptions } from "antd";
 import ErrorBlock from "../components/UI/ErrorBlock";
 import { ProductContext } from "../context/products-context";
 
@@ -11,8 +11,8 @@ function NewProduct() {
   const navigate = useNavigate();
   const location = useLocation();
   const [form] = Form.useForm();
-  const {addProduct} = useContext(ProductContext)
-  
+  const { addProduct } = useContext(ProductContext);
+
   const { mutate, isPending, isError, error } = useMutation({
     mutationFn: createNewProduct,
     onSuccess: () => {
@@ -29,12 +29,17 @@ function NewProduct() {
     const values = await form.validateFields();
     mutate({ product: values });
     const newproduct = {
-      id: Math.random()*100/5,
-      ...values,
-    }
+      id: (Math.random().toFixed(1) * 10000),
+      images:[values.image],
+      title: values.title,
+      description: values.description,
+      category: values.category,
+      brand: values.brand,
+      price: values.price,
+      rating: values.rating,
+    };
     addProduct(newproduct);
     console.log(newproduct);
-    
   }
 
   return (
@@ -48,6 +53,15 @@ function NewProduct() {
           rules={[{ required: true, message: "Please input the title!" }]}
         >
           <Input className="custom-input" />
+        </Form.Item>
+        <Form.Item name="category" label="Category" className="custom-form-item-label">
+          <Input className="custom-input"/>
+        </Form.Item>
+        <Form.Item name="brand" label="Brand" className="custom-form-item-label">
+          <Input className="custom-input"/>
+        </Form.Item>
+        <Form.Item name="image" label="Image URL" className="custom-form-item-label">
+          <Input className="custom-input"/>
         </Form.Item>
         <Form.Item
           name="description"
@@ -64,6 +78,9 @@ function NewProduct() {
           rules={[{ required: true, message: "Please input the price!" }]}
         >
           <Input type="number" className="custom-input" />
+        </Form.Item>
+        <Form.Item name="rating" label="Rating" className="custom-form-item-label">
+          <Input type="number" className="custom-input"/>
         </Form.Item>
         <Button
           type="primary"

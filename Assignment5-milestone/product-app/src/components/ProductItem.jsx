@@ -1,6 +1,5 @@
 import { NavLink } from "react-router-dom";
 import { styled } from "styled-components";
-import classes from "./MainNavigation.module.css";
 
 const ProductItemStyled = styled.article`
   height: 100%;
@@ -65,22 +64,22 @@ const ProductItemStyled = styled.article`
   }
 
   & a {
-  font: inherit;
-  cursor: pointer;
-  padding: 0.5rem 1.5rem;
-  border: none;
-  color: #fff;
-  font-weight: bold;
-  text-decoration: none;
-}
+    font: inherit;
+    cursor: pointer;
+    padding: 0.5rem 1.5rem;
+    border: none;
+    color: #fff;
+    font-weight: bold;
+    text-decoration: none;
+  }
 
-& a:hover {
-  color: #e30d7c;
-}
+  & a:hover {
+    color: #e30d7c;
+  }
 
-& a.active {
-  color: #e30d7c;
-}
+  & a.active {
+    color: #e30d7c;
+  }
 `;
 
 export default function ProductItem({ product }) {
@@ -100,27 +99,21 @@ export default function ProductItem({ product }) {
 
       <div className="product-item-content">
         <h2>{product.title}</h2>
-        <p>★{product.description}</p>
 
         {product.category && (
           <p className="product-category">Category: {product.category}</p>
         )}
-        {product.brand && (
-          <p className="product-brand">Brand: {product.brand}</p>
-        )}
+
         <p className="product-price">Price: ${product.price}</p>
         {product.rating && <p className="product-rating">★{product.rating}</p>}
 
         {product.id && (
-          
           <NavLink
-          to={`/products/${product.id}`}
-          className={({ isActive }) =>
-            isActive ? "active" : undefined
-          }
-        >
-          View Details
-        </NavLink>
+            to={`/products/${product.id}`}
+            className={({ isActive }) => (isActive ? "active" : undefined)}
+          >
+            View Details
+          </NavLink>
         )}
       </div>
     </ProductItemStyled>

@@ -2,11 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchProducts } from "../util/http";
 import ErrorBlock from "../components/UI/ErrorBlock";
 import ProductItem from "../components/ProductItem";
-import {  useContext } from "react";
+import { useContext } from "react";
 import { ProductContext } from "../context/products-context";
 
 function ProductsPage() {
-  const {products} = useContext(ProductContext);
+  const { products } = useContext(ProductContext);
   console.log(products);
 
   const { data, isPending, isError, error } = useQuery({
@@ -41,7 +41,7 @@ function ProductsPage() {
     );
   }
 
-  if(products.length>0){
+  if (products.length > 0) {
     content = (
       <ul className="product-list">
         {products.map((product) => (
@@ -53,7 +53,12 @@ function ProductsPage() {
     );
   }
 
-  return <section className="content-section">{content}</section>;
+  return (
+    <section className="content-section">
+      <h2>Newly Added Products</h2>
+      {content}
+    </section>
+  );
 }
 
 export default ProductsPage;
