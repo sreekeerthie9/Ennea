@@ -5,7 +5,6 @@ import ProductItem from "../components/ProductItem";
 import { useParams } from "react-router-dom";
 
 function ProductsPage() {
-  const params = useParams();
 
   const { data, isPending, isError, error } = useQuery({
     queryKey: ["products"],

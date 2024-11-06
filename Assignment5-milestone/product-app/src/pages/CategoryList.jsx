@@ -21,15 +21,22 @@ const CategoryCard = styled.div`
 `;
 
 const CategoriesList = styled.ul`
-  display: grid;
+  display: grid; 
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
+`;
+
+const Container = styled.div`
+  margin: 3rem 0 6rem 0;
+  padding: 0 15%;
+  align-items: center;
 `;
 
 export default function CategoryList() {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["products", "categories"],
     queryFn: ({ signal }) => fetchCategories({ signal }),
+    staleTime: 5000,
   });
 
   const [categoryName, setCategoryName] = useState("");
@@ -53,7 +60,9 @@ export default function CategoryList() {
   let content;
 
   if (isLoading) {
-    content = <p>Loading different categories.</p>;
+    content = (
+      <p style={{ textAlign: "center" }}>Loading different categories...</p>
+    );
   }
 
   if (isError) {
@@ -83,7 +92,7 @@ export default function CategoryList() {
   let categoryContent;
 
   if (isLoadingCategory) {
-    categoryContent = <p>Loading...</p>;
+    categoryContent = <p style={{ textAlign: "center" }}>Loading...</p>;
   } else if (isErrorCategory) {
     categoryContent = (
       <ErrorBlock
@@ -98,7 +107,9 @@ export default function CategoryList() {
 
   if (categoryData) {
     if (!categoryData.length) {
-      categoryContent = <p>No Data!</p>;
+      categoryContent = (
+        <h3 style={{ textAlign: "center", fontWeight: "bold" }}>No Data!</h3>
+      );
     } else {
       categoryContent = (
         <ul className="product-list">
@@ -113,9 +124,9 @@ export default function CategoryList() {
   }
 
   return (
-    <div style={{ padding: "20px" }}>
+    <Container>
       {content}
       {categoryContent}
-    </div>
+    </Container>
   );
 }

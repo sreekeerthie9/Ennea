@@ -16,6 +16,7 @@ const StyledHeader = styled.header`
 `;
 
 function MainNavigation() {
+  const [hover, setHover] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [form] = Form.useForm();
   const navigate = useNavigate();
@@ -74,8 +75,15 @@ function MainNavigation() {
         </nav>
         <Button
           type="primary"
+          style={{
+            backgroundColor: hover ? "#e30d5b" : "",
+            color: hover ? "#fff" : "",
+            boxShadow: hover ? "0 2px 8px rgba(0, 0, 0, 0.26)" : "",
+          }}
           onClick={showModal}
           className="custom-button ant-button"
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
         >
           Add New Product
         </Button>

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchProducts } from "../util/http";
 import ErrorBlock from "../components/UI/ErrorBlock";
 import { useState, useRef } from "react";
-import { DatePicker, Table, Input,Button } from "antd";
+import { DatePicker, Table, Input, Button } from "antd";
 import moment from "moment";
 import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
@@ -23,7 +23,7 @@ const ViewDetailsButton = styled.button`
 const { Search } = Input;
 
 function HomePage() {
-  
+  const [hover, setHover] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const [startDate, setStartDate] = useState(moment().subtract(7, "days"));
@@ -44,7 +44,6 @@ function HomePage() {
       )}`
     );
   };
-
 
   const searchElement = useRef();
 
@@ -107,13 +106,29 @@ function HomePage() {
       <section className="content-section" id="all-events-section">
         <header style={{ alignItems: "center" }}>
           <div className="date-picker-group">
-            <DatePicker defaultValue={startDate} onChange={ handleStartChange} />
+            <DatePicker
+              defaultValue={startDate}
+              onChange={handleStartChange}
+              format="YYYY-MM-DD"
+            />
             <DatePicker
               defaultValue={endDate}
               onChange={handleEndChange}
               disabledDate={(current) => current && current < startDate}
+              format="YYYY-MM-DD"
             />
-            <Button type="primary" onClick={handleSubmit}>
+            <Button
+              type="primary"
+              style={{
+                backgroundColor: hover ? "#e30d5b" : "",
+                color: hover ? "#fff" : "",
+                boxShadow: hover ? "0 2px 8px rgba(0, 0, 0, 0.26)" : "",
+              }}
+              className="custom-button ant-button"
+              onClick={handleSubmit}
+              onMouseEnter={() => setHover(true)}
+              onMouseLeave={() => setHover(false)}
+            >
               Submit
             </Button>
           </div>

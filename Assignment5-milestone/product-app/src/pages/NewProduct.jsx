@@ -1,11 +1,12 @@
 import { createNewProduct, queryClient } from "../util/http";
 import { useMutation } from "@tanstack/react-query";
-import React from "react";
+import {useState} from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Form, Input, Button, Modal } from "antd";
 import ErrorBlock from "../components/UI/ErrorBlock";
 
 function NewProduct() {
+  const [hover, setHover] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const [form] = Form.useForm();
@@ -57,8 +58,15 @@ function NewProduct() {
         </Form.Item>
         <Button
           type="primary"
+          style={{
+            backgroundColor: hover ? "#e30d5b" : "",
+            color: hover ? "#fff" : "",
+            boxShadow: hover ? "0 2px 8px rgba(0, 0, 0, 0.26)" : "",
+          }}
           onClick={handleConfirm}
           className="custom-button ant-button"
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
         >
           {isPending ? "Submitting..." : "Confirm and Create Product"}
         </Button>
