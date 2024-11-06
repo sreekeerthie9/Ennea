@@ -39,7 +39,6 @@ function NewProduct() {
       rating: values.rating,
     };
     addProduct(newproduct);
-    console.log(newproduct);
   }
 
   return (

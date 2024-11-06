@@ -48,11 +48,11 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <ProductContextProvider>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <ProductContextProvider>
         <RouterProvider router={router} />
-      </QueryClientProvider>
-    </ProductContextProvider>
+      </ProductContextProvider>
+    </QueryClientProvider>
   );
 }
 

@@ -46,7 +46,7 @@ export default function ProductDetailsPage() {
   let addedProductData;
   let image;
   let content;
-  if (params.productId >= 1000) {
+  //if (params.productId >= 1000) {
     addedProductData = products.find(
       (product) => params.productId == product.id
     );
@@ -82,7 +82,8 @@ export default function ProductDetailsPage() {
         </>
       );
     }
-  } else {
+ // } 
+ /* else {
     const { data, isPending, isError, error } = useQuery({
       queryKey: ["products", params.productId],
       queryFn: ({ signal }) =>
@@ -141,7 +142,7 @@ export default function ProductDetailsPage() {
         </>
       );
     }
-  }
+  } */
 
   //console.log('params:', params); console.log('data:', data);
 

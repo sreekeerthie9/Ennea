@@ -2,17 +2,13 @@ import { QueryClient } from "@tanstack/react-query";
 
 export const queryClient = new QueryClient();
 
-export async function fetchProducts({ signal, categoryName, searchTerm }) {
+export async function fetchProducts({ signal, categoryName }) {
   let url = "https://dummyjson.com/products";
 
-  if (searchTerm) {
-    url = "https://dummyjson.com/products/search?q=" + searchTerm;
-  }
   if (categoryName) {
     url = "https://dummyjson.com/products/category/" + categoryName;
   }
-
-  const response = await fetch(url, { signal: signal });
+  const response = await fetch(url, { signal });
 
   if (!response.ok) {
     const error = new Error("An error occured while fetching the products.");
@@ -22,12 +18,12 @@ export async function fetchProducts({ signal, categoryName, searchTerm }) {
   }
 
   const { products } = await response.json();
-
+  
   return products;
 }
 
 export async function fetchCategories({ signal }) {
-  //console.log(url);
+  
   const response = await fetch("https://dummyjson.com/products/categories", {
     signal: signal,
   });
@@ -40,7 +36,7 @@ export async function fetchCategories({ signal }) {
   }
 
   const categories = await response.json();
-  //console.log(products);
+  
 
   return categories;
 }
@@ -75,7 +71,7 @@ export async function createNewProduct(productData) {
     throw error;
   }
 
-  const product= await response.json();
+  const product = await response.json();
 
   return product;
 }

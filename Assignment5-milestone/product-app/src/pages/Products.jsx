@@ -7,44 +7,12 @@ import { ProductContext } from "../context/products-context";
 
 function ProductsPage() {
   const { products } = useContext(ProductContext);
-  console.log(products);
-
-  const { data, isPending, isError, error } = useQuery({
-    queryKey: ["products"],
-    queryFn: ({ signal }) => fetchProducts({ signal }),
-  });
-
   let content;
-
-  if (isPending) {
-    content = <p>Loading...</p>;
-  }
-
-  if (isError) {
-    content = (
-      <ErrorBlock
-        title="An error occured"
-        message={error.info?.message || "Failed to fetch products."}
-      />
-    );
-  }
-
-  if (data) {
-    content = (
-      <ul className="product-list">
-        {data.map((product) => (
-          <li key={product.id}>
-            <ProductItem product={product} />
-          </li>
-        ))}
-      </ul>
-    );
-  }
-
   if (products.length > 0) {
+    let newProducts= products.slice(0,10)
     content = (
       <ul className="product-list">
-        {products.map((product) => (
+        {newProducts.map((product) => (
           <li key={product.id}>
             <ProductItem product={product} />
           </li>

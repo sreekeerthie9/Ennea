@@ -21,7 +21,7 @@ const CategoryCard = styled.div`
 `;
 
 const CategoriesList = styled.ul`
-  display: grid; 
+  display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
 `;
@@ -48,8 +48,7 @@ export default function CategoryList() {
     error: errorCategory,
   } = useQuery({
     queryKey: ["products", { categoryName }],
-    queryFn: ({ signal, queryKey }) =>
-      fetchProducts({ signal, ...queryKey[1] }),
+    queryFn: ({signal, queryKey }) => fetchProducts({signal, ...queryKey[1] }),
     enabled: !!categoryName,
   });
 

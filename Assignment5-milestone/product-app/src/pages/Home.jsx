@@ -1,11 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
-import { fetchProducts } from "../util/http";
-import ErrorBlock from "../components/UI/ErrorBlock";
-import { useState, useRef } from "react";
-import { DatePicker, Table, Input, Button } from "antd";
-import moment from "moment";
+
+import { useState, memo, useMemo, useRef, useContext } from "react";
+import { DatePicker, Table, Input, Button, message } from "antd";
+import dayjs from 'dayjs';
 import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { ProductContext } from "../context/products-context";
 
 const ViewDetailsButton = styled.button`
   background-color: #007bff;
@@ -22,12 +21,15 @@ const ViewDetailsButton = styled.button`
 
 const { Search } = Input;
 
-function HomePage() {
+const HomePage = memo(function HomePage() {
+  const searchElement = useRef();
   const [hover, setHover] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
-  const [startDate, setStartDate] = useState(moment().subtract(7, "days"));
-  const [endDate, setEndDate] = useState(moment());
+  const [startDate, setStartDate] = useState(dayjs().subtract(7, "days"));
+  const [endDate, setEndDate] = useState(dayjs());
+  const { products, isLoading } = useContext(ProductContext);
+  const [searchValue, setSearchValue] = useState("");
+  let content;
 
   const handleStartChange = (date) => {
     setStartDate(date);
@@ -37,42 +39,35 @@ function HomePage() {
     setEndDate(date);
   };
 
-  const handleSubmit = () => {
-    alert(
+  function handleSubmit() {
+    message.info(
       `Start Date: ${startDate.format("YYYY-MM-DD")} End Date: ${endDate.format(
         "YYYY-MM-DD"
       )}`
     );
-  };
-
-  const searchElement = useRef();
+  }
 
   function handleViewDetails(productId) {
     navigate(`/products/${productId}`);
   }
 
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["products", { searchTerm: searchTerm }],
-    queryFn: ({ signal, queryKey }) =>
-      fetchProducts({ signal, ...queryKey[1] }),
-    enabled: searchTerm !== undefined,
-  });
-
   function handleSearch(value) {
-    setSearchTerm(value);
+    setSearchValue(value.toLowerCase());
   }
 
-  let content;
-  if (isError) {
-    content = (
-      <ErrorBlock
-        title="An error occured"
-        message={error.info?.message || "Failed to fetch events."}
-      />
-    );
-  }
+  const filteredProducts = useMemo(() => {
+    return searchValue
+      ? products.filter((product) => {
+          return (
+            (product.title && product.title.toLowerCase().includes(searchValue)) ||
+            (product.category && product.category.toLowerCase() === searchValue) ||
+            (product.brand && product.brand.toLowerCase() === searchValue)
+          );
+        })
+      : products;
+  }, [searchValue, products]); 
 
-  const columns = [
+  const columns = useMemo(() => [
     { title: "ID", dataIndex: "id", key: "id" },
     { title: "Title", dataIndex: "title", key: "title" },
     { title: "Description", dataIndex: "description", key: "description" },
@@ -86,13 +81,14 @@ function HomePage() {
         </ViewDetailsButton>
       ),
     },
-  ];
+  ], []);
+
 
   content = (
     <div className="table-container">
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={filteredProducts}
         rowKey="id"
         loading={isLoading}
       />
@@ -145,6 +141,6 @@ function HomePage() {
       </section>
     </>
   );
-}
+});
 
 export default HomePage;
