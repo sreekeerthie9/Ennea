@@ -1,16 +1,18 @@
 import { createNewProduct, queryClient } from "../util/http";
 import { useMutation } from "@tanstack/react-query";
-import {useState} from "react";
+import {useContext, useState} from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Form, Input, Button, Modal } from "antd";
 import ErrorBlock from "../components/UI/ErrorBlock";
+import { ProductContext } from "../context/products-context";
 
 function NewProduct() {
   const [hover, setHover] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const [form] = Form.useForm();
-
+  const {addProduct} = useContext(ProductContext)
+  
   const { mutate, isPending, isError, error } = useMutation({
     mutationFn: createNewProduct,
     onSuccess: () => {
@@ -18,7 +20,7 @@ function NewProduct() {
       Modal.success({
         title: "Product Created",
         content: "Your product has been created successfully.",
-        onOk: () => navigate("/"),
+        onOk: () => navigate("/products"),
       });
     },
   });
@@ -26,6 +28,13 @@ function NewProduct() {
   async function handleConfirm() {
     const values = await form.validateFields();
     mutate({ product: values });
+    const newproduct = {
+      id: Math.random()*100/5,
+      ...values,
+    }
+    addProduct(newproduct);
+    console.log(newproduct);
+    
   }
 
   return (

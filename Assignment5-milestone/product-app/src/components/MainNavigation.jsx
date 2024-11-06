@@ -29,7 +29,7 @@ function MainNavigation() {
     form
       .validateFields()
       .then((values) => {
-        console.log("New Product Details:", values);
+        //console.log("New Product Details:", values);
         form.resetFields();
         setModalVisible(false);
         navigate("/new", { state: values });

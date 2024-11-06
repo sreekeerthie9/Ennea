@@ -2,9 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchProducts } from "../util/http";
 import ErrorBlock from "../components/UI/ErrorBlock";
 import ProductItem from "../components/ProductItem";
-import { useParams } from "react-router-dom";
+import {  useContext } from "react";
+import { ProductContext } from "../context/products-context";
 
 function ProductsPage() {
+  const {products} = useContext(ProductContext);
+  console.log(products);
 
   const { data, isPending, isError, error } = useQuery({
     queryKey: ["products"],
@@ -30,6 +33,18 @@ function ProductsPage() {
     content = (
       <ul className="product-list">
         {data.map((product) => (
+          <li key={product.id}>
+            <ProductItem product={product} />
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  if(products.length>0){
+    content = (
+      <ul className="product-list">
+        {products.map((product) => (
           <li key={product.id}>
             <ProductItem product={product} />
           </li>

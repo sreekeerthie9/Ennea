@@ -75,7 +75,7 @@ export async function createNewProduct(productData) {
     throw error;
   }
 
-  const { product } = await response.json();
+  const product= await response.json();
 
   return product;
 }
