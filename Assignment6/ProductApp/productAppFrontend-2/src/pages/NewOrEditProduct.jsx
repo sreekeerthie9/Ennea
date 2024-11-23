@@ -1,6 +1,6 @@
 import { createNewProduct, queryClient, updateProduct } from "../utils/http";
 import { useMutation } from "@tanstack/react-query";
-import {  useState } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Form, Input, Button, Modal, Descriptions, Space, Card } from "antd";
 import styled from "styled-components";
@@ -35,9 +35,8 @@ export default function NewProduct() {
   const [hover, setHover] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const {values, isEditMode } = location.state || {};
   const [form] = Form.useForm();
-
-  const isEditMode = location.state ? true : false;
 
   const { mutate, isPending, isError, error } = useMutation({
     mutationFn: isEditMode ? updateProduct : createNewProduct,
@@ -45,24 +44,27 @@ export default function NewProduct() {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       Modal.success({
         title: "Product Created",
-        content: "Your product has been created successfully.",
+        content: isEditMode
+          ? "Your product has been edited successfully."
+          : "Your product has been created successfully.",
         onOk: () => navigate("/products"),
       });
     },
   });
 
   async function handleConfirm() {
-    const values = await form.validateFields();
+    const confirmedValues = await form.validateFields();
+    
     mutate({
-      id: isEditMode ? location.state.id : undefined,
-      ...values,
+      id: isEditMode ? values.id : undefined,
+      ...confirmedValues,
     });
   }
 
   return (
     <>
-      <h1>{isEditMode ?"Edit Product Details" : "Confirm Product Details"}</h1>
-      <StyledForm form={form} initialValues={location.state} layout="vertical">
+      <h1 style={{textAlign: "center"}}>{isEditMode ? "Edit Product Details" : "Confirm Product Details"}</h1>
+      <StyledForm form={form} initialValues={values} layout="vertical">
         <Form.Item
           name="title"
           label="Title"

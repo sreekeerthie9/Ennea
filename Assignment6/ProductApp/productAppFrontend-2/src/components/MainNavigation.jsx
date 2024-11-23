@@ -81,7 +81,7 @@ export default function MainNavigation() {
       .then((values) => {
         form.resetFields();
         setModalVisible(false);
-        navigate("/new", { state: values });
+        navigate("/new", { state:{ values, isEditMode:false} });
       })
       .catch((info) => {
         console.log("Validation Failed:", info);

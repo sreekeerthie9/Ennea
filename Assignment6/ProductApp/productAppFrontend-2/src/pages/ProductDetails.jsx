@@ -2,7 +2,7 @@ import { Navigate, NavLink, useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
 import { deleteProduct, fetchProductDetails, queryClient } from "../utils/http";
-import { Card, Modal} from "antd";
+import { Card, Modal } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 const StyledSection = styled.section`
@@ -90,22 +90,22 @@ export default function ProductDetailsPage() {
     queryFn: ({ signal }) => fetchProductDetails({ signal, id }),
   });
 
-  const {mutate, isPending, isError} = useMutation({
+  const { mutate, isPending, isError } = useMutation({
     mutationFn: deleteProduct,
     onSuccess: (data) => {
-        console.log("Delete successful"+data);
-        queryClient.invalidateQueries({queryKey: ["products"]});
-        Modal.success({
-            title: "Product Deleted",
-            content: "Your product has been deleted successfully.",
-            onOk: () => navigate("/"),
-        })
-    }
-  })
+      console.log("Delete successful" + data);
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      Modal.success({
+        title: "Product Deleted",
+        content: "Your product has been deleted successfully.",
+        onOk: () => navigate("/"),
+      });
+    },
+  });
 
-  function handleDelete(){
-    if(window.confirm("Are you sure you want to delete?")){
-        mutate(id);
+  function handleDelete() {
+    if (window.confirm("Are you sure you want to delete?")) {
+      mutate(id);
     }
   }
 
@@ -123,7 +123,7 @@ export default function ProductDetailsPage() {
           title={product.title}
           extra={
             <Extra>
-              <NavLink to="/new" state={product}>
+              <NavLink to="/new" state={{ values: product, isEditMode: true }}>
                 <EditOutlined key="edit" />
                 edit
               </NavLink>
