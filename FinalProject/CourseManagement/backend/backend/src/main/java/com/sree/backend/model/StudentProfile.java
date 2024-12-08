@@ -19,6 +19,7 @@ public class StudentProfile {
     private String username;
     private String email;
     private String phone;
+    private String bio;
     private Role role;
     private List<CourseResponse> courses;
 }

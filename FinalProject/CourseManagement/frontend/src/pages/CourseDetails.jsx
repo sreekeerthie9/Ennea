@@ -1,41 +1,70 @@
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import {
-  deleteCourse,
   fetchCourseDetails,
-  getEnrolledStudents,
   queryClient,
+  deleteCourse,
+  getEnrolledStudents,
 } from "../util/http";
 import { Card, Modal, Typography } from "antd";
-import ConfigStyles from "../components/ConfigStyles";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getAuthToken, getRole } from "../util/auth";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import { useState } from "react";
 
-const StyledCard = styled(Card)`
-  margin: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-  overflow: hidden;
-  display: block;
-  height: 100%;
+const Container = styled.div`
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  height: 100vh;
 `;
-const StyledImage = styled.img`
+
+const CourseDetailsCard = styled(Card)`
+  max-width: 700px;
   width: 100%;
-  max-height: 300px;
-  object-fit: contain;
+  border-radius: 8px;
+  overflow: hidden;
+  align-items: center;
+`;
+
+const ContentWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+`;
+
+const StyledImage = styled.img`
+  width: 300px;
+  object-fit: cover;
   background-color: #f0f0f0;
+`;
+
+const DetailsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const StyledTitle = styled(Typography.Title)`
+  font-size: 2rem;
+  color: #343a40;
   margin-bottom: 1rem;
 `;
+
 const StyledText = styled(Typography.Text)`
   font-size: 1rem;
   color: #333;
   margin-bottom: 0.5rem;
 `;
+
+const HighlightedText = styled(Typography.Text)`
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+`;
+
 const StyledExtra = styled.div`
   display: flex;
   align-items: center;
+  margin-top: 1rem;
   & > * {
     margin-right: 1rem;
   }
@@ -43,11 +72,19 @@ const StyledExtra = styled.div`
     margin-right: 0;
   }
 `;
+
 const DeleteLink = styled.a`
   color: #e30d7c;
   cursor: pointer;
   &:hover {
     color: #c00;
+  }
+`;
+
+const StyledNavLink = styled(NavLink)`
+  color: #e30d7c;
+  &:hover {
+    color: #e30d5b;
   }
 `;
 
@@ -71,17 +108,16 @@ export default function CourseDetails() {
   const { data: enrolledStudents } = useQuery({
     queryKey: ["courses", "student", id],
     queryFn: () => getEnrolledStudents(id),
-    enabled: token && isAdmin,
+    enabled: !!token && isAdmin,
   });
 
   const { mutate, isPending, isError } = useMutation({
     mutationFn: deleteCourse,
     onSuccess: () => {
-      
       queryClient.invalidateQueries({ queryKey: ["courses"] });
       Modal.success({
-        title: "Product Deleted",
-        content: "Your product has been deleted successfully.",
+        title: "Course Deleted",
+        content: "The course has been deleted successfully.",
         onOk: () => navigate("/"),
       });
     },
@@ -91,7 +127,7 @@ export default function CourseDetails() {
     setDeleteModal(true);
   }
 
-  function handleOk(){
+  function handleOk() {
     mutate(id);
     setDeleteModal(false);
   }
@@ -102,55 +138,60 @@ export default function CourseDetails() {
 
   let content;
 
-  if (data) {
+  if (isLoading) {
+    content = <p>Loading...</p>;
+  } else if (error) {
+    content = <p>There was an error loading the course details.</p>;
+  } else if (data) {
     content = (
-      <>
-        {!isAdmin && (
-          <StyledCard title={data.title}>
-            <StyledImage alt={data.title} src={data.image} />
-            <StyledText>{data.description}</StyledText>
-            <StyledText>{data.category}</StyledText>
-          </StyledCard>
-        )}
-        {token && isAdmin && (
-          <>
-            <Card
-              title={data.title}
-              extra={
+      <CourseDetailsCard>
+        <ContentWrapper>
+          <StyledImage alt={data.title} src={data.image} />
+          <DetailsWrapper>
+            <StyledTitle>{data.title}</StyledTitle>
+            <HighlightedText>{data.description}</HighlightedText>
+            <StyledText>Category:</StyledText>
+            <HighlightedText>{data.category}</HighlightedText>
+            {!token && (
+              <StyledText style={{ fontWeight: "bold" }}>
+                To enroll to close please login or sign up.
+              </StyledText>
+            )}
+            {token && isAdmin && (
+              <>
+                <StyledText>
+                  Total enrolled students:{" "}
+                  <HighlightedText>{enrolledStudents || 0}</HighlightedText>
+                </StyledText>
                 <StyledExtra>
-                  <NavLink
+                  <StyledNavLink
                     to="/admin/new"
                     state={{ values: data, isEditMode: true }}
                   >
-                    <EditOutlined key="edit" />
-                    Edit
-                  </NavLink>
-
+                    <EditOutlined key="edit" /> Edit
+                  </StyledNavLink>
                   <DeleteLink onClick={handleDelete}>
-                    <DeleteOutlined key="delete" />
-                    Delete
+                    <DeleteOutlined key="delete" /> Delete
                   </DeleteLink>
                 </StyledExtra>
-              }
-            >
-              <img alt={data.title} src={data.image} />
-              <StyledText>{data.description}</StyledText>
-              <StyledText>{data.category}</StyledText>
-              <StyledText>Total enrolled student:{enrolledStudents}</StyledText>
-            </Card>
-            <Modal
-              title="Confirm Deletion"
-              open={deleteModal}
-              onOk={handleOk}
-              onCancel={handleCancel}
-            >
-              <p>Are you sure you want to delete this course?</p>{" "}
-            </Modal>
-            {isPending && <p>Deleting...</p>}
-          </>
-        )}
-      </>
+
+                <Modal
+                  title="Confirm Deletion"
+                  open={deleteModal}
+                  onOk={handleOk}
+                  onCancel={handleCancel}
+                >
+                  <p>Are you sure you want to delete this course?</p>
+                </Modal>
+                {isPending && <p>Deleting...</p>}
+              </>
+            )}
+            <StyledNavLink to="../">Back</StyledNavLink>
+          </DetailsWrapper>
+        </ContentWrapper>
+      </CourseDetailsCard>
     );
   }
-  return <>{content}</>;
+
+  return <Container>{content}</Container>;
 }

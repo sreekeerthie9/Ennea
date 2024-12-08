@@ -40,7 +40,12 @@ export default function RegisterForm() {
       });
   }
   return (
-    <LoginForm form={form} layout="vertical" method="post" onFinish={handleFinish}>
+    <LoginForm
+      form={form}
+      layout="vertical"
+      method="post"
+      onFinish={handleFinish}
+    >
       <h1 style={{ fontWeight: "bold" }}>Create new Account</h1>
 
       <Form.Item>
@@ -73,6 +78,12 @@ export default function RegisterForm() {
         ]}
       >
         <Input placeholder="Lastname" />
+      </Form.Item>
+      <Form.Item label="Email :" name="email">
+        <Input placeholder="email" />
+      </Form.Item>
+      <Form.Item label="Phone no :" name="phone">
+        <Input placeholder="phone" />
       </Form.Item>
 
       <Form.Item

@@ -1,58 +1,64 @@
-import { Button, Card, Modal } from "antd";
+import { Button, Card, message, Modal } from "antd";
 import { NavLink, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { getAuthToken, getRole } from "../util/auth";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import {
-  enrollTOCourse,
-  getProfile,
-  queryClient,
-  unrollCourse,
-} from "../util/http";
+import { queryClient,  getProfile, enrollTOCourse, unrollCourse } from "../util/http";
 
-const StyledCard = styled(Card)`
-  margin: 2rem 0;
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+const CourseCard = styled(Card)`
+  width: 100%;
+  border-radius: 8px;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  width: 20rem;
   text-align: center;
-
-  & .product-category {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #b0b3b7;
-  }
-
-  & a {
-    font: inherit;
-    cursor: pointer;
-    border: none;
-    color: #110e0e;
-    font-weight: bold;
-    text-decoration: none;
-  }
-
-  & a:hover {
-    color: #e30d7c;
-  }
-
-  & a.active {
-    color: #e30d7c;
-  }
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 `;
 
-const StyledImage = styled.img`
-  width: 200px;
-  height: 200px;
+const CourseImage = styled.img`
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+`;
+
+const Wrapper = styled.div`
+  height: 150px;
+  width: 100%;
+`;
+
+const CourseTitle = styled.h3`
+  font-size: 1.25rem;
+  margin: 1rem 0;
+`;
+
+const CourseDescription = styled.p`
+  font-size: 1rem;
+  color: #555;
 `;
 
 const StyledButton = styled(Button)`
+  width: 100%;
   margin-top: 1rem;
-  width: 100px; /* Ensure consistent button width */
+  padding: 0.5rem;
+  color: #e30d7c;
+  border: 1px solid #e30d7c;
+  border-radius: 4px;
+  &:hover {
+    background-color: #e30d7c;
+    color: #fff;
+  }
+`;
+
+const StyledNavLink = styled(NavLink)`
+  display: block;
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  color: #e30d7c;
+  border: 1px solid #e30d7c;
+  border-radius: 4px;
+  &:hover {
+    background-color: #e30d7c;
+    color: #fff;
+  }
 `;
 
 export default function CourseItem({ course }) {
@@ -69,9 +75,8 @@ export default function CourseItem({ course }) {
   const { data, isLoading, error } = useQuery({
     queryKey: ["profile"],
     queryFn: () => getProfile(),
-    enabled:token && !isAdmin,
+    enabled: !!token && !isAdmin,
   });
-
 
   const {
     mutate: enroll,
@@ -88,6 +93,14 @@ export default function CourseItem({ course }) {
         onOk: () => navigate("/"),
       });
     },
+
+    onError: (error) => {
+      if (error.code === 403) {
+        message.error("Max limit exceeded");
+      } else {
+        message.error("An error occurred while enrolling in the course.");
+      }
+    },
   });
 
   const {
@@ -97,7 +110,7 @@ export default function CourseItem({ course }) {
   } = useMutation({
     mutationFn: unrollCourse,
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["courses","profile"] });
+      queryClient.invalidateQueries({ queryKey: ["courses", "profile"] });
       Modal.success({
         title: "Unrolled from Course",
         content: "you have been successfully unrolled from this course.",
@@ -120,25 +133,21 @@ export default function CourseItem({ course }) {
 
   return (
     <>
-      <StyledCard
-        title={course.title}
-        cover={<StyledImage alt={course.title} src={course.image} />}
-      >
-        <p className="product-category">Category: {course.category}</p>
+      <CourseCard key={course.id}>
+        <CourseImage src={course.image} alt={course.title} />
+        <Wrapper>
+          <CourseTitle>{course.title}</CourseTitle>
+          <CourseDescription>{course.description}</CourseDescription>
+        </Wrapper>
+        <StyledNavLink to={`/courses/${course.id}`}>View Details</StyledNavLink>
 
-        <NavLink
-          to={`/courses/${course.id}`}
-          className={({ isActive }) => (isActive ? "active" : undefined)}
-        >
-          View Details
-        </NavLink>
         {token && !isAdmin && !enrolled && (
           <StyledButton onClick={handleEnroll}>Enroll</StyledButton>
         )}
         {token && !isAdmin && enrolled && (
           <StyledButton onClick={handleUnroll}>Unroll</StyledButton>
         )}
-      </StyledCard>
+      </CourseCard>
     </>
   );
 }

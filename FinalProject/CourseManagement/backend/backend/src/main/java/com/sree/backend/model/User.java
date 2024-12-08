@@ -32,18 +32,18 @@ public class User {
     private String username;
 
     @Column(nullable = false)
-    //@Size(min = 8, message = "Password must be at least 8 character long")
     private String password;
 
-    //@Email(message= "Email should be valid")
     private String email;
 
-    //@Pattern(regexp = "^\\d{10}$", message = "phone number should be 10 digits")
     private String phone;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "students", fetch = FetchType.EAGER)
     private List<Course> courses;
+
+
+    private String bio;
 
     @Enumerated(EnumType.STRING)
     private Role role;

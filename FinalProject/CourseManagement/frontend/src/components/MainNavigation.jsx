@@ -1,4 +1,4 @@
-import { Button, Dropdown, Menu, Space } from "antd";
+import { Button, Dropdown, Menu, Space, Typography } from "antd";
 import {
   Form,
   NavLink,
@@ -19,11 +19,11 @@ import CourseModal from "./CourseModal";
 import { useContext, useMemo, useState } from "react";
 import { CourseContext } from "../context/course-context";
 import Search from "antd/es/input/Search";
-import { useQuery } from "@tanstack/react-query";
 
 const StyledHeader = styled.header`
   margin: 0 auto;
   padding: 1rem 2rem;
+  width: 100%;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   display: flex;
   justify-content: space-between;
@@ -78,6 +78,12 @@ const StyledDropdownLink = styled.a`
   }
 `;
 
+const Logo = styled.div`
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+`;
+
 export default function MainNavigation() {
   const [visible, setVisible] = useState(false);
   const { searchCourses, categories, loadingCategories, categoryError } =
@@ -128,6 +134,7 @@ export default function MainNavigation() {
   return (
     <StyledHeader>
       <StyledMenu>
+        <Logo>Ennea</Logo>
         <NavLink
           to="/"
           className={({ isActive }) => (isActive ? "active" : undefined)}
@@ -164,7 +171,6 @@ export default function MainNavigation() {
             style={{ width: 400 }}
             onSearch={handleSearch}
           />
-          {/* Courses */}
         </NavLink>
       </StyledMenu>
       <StyledMenu>
@@ -179,39 +185,44 @@ export default function MainNavigation() {
 
         {token && !admin && (
           <>
-            <NavLink
-              to="/user/mycourses"
-              className={({ isActive }) => (isActive ? "active" : undefined)}
-            >
-              My Courses
-            </NavLink>
+            <Typography>
+              <NavLink
+                to="/user/mycourses"
+                className={({ isActive }) => (isActive ? "active" : undefined)}
+              >
+                My Courses
+              </NavLink>
 
-            <NavLink
-              to="/profile"
-              className={({ isActive }) => (isActive ? "active" : undefined)}
-            >
-              <Space>
-                <ProfileOutlined />
-                Profile
-              </Space>
-            </NavLink>
+              <NavLink
+                to="/user/profile"
+                className={({ isActive }) => (isActive ? "active" : undefined)}
+              >
+                <Space>
+                  <ProfileOutlined />
+                  Profile
+                </Space>
+              </NavLink>
+            </Typography>
           </>
         )}
 
         {!token && (
           <>
-            <NavLink
-              to="/auth?mode=login"
-              className={({ isActive }) => (isActive ? "active" : undefined)}
-            >
-              Log in
-            </NavLink>
-            <NavLink
-              to="/auth?mode=signup"
-              className={({ isActive }) => (isActive ? "active" : undefined)}
-            >
-              Sign Up
-            </NavLink>
+            <Typography>
+              <NavLink
+                to="/auth?mode=login"
+                className={({ isActive }) => (isActive ? "active" : undefined)}
+              >
+                Log in
+              </NavLink>
+
+              <NavLink
+                to="/auth?mode=signup"
+                className={({ isActive }) => (isActive ? "active" : undefined)}
+              >
+                Sign Up
+              </NavLink>
+            </Typography>
           </>
         )}
         {token && <a onClick={handleLogout}>Log out</a>}

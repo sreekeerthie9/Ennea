@@ -102,8 +102,9 @@ export default function AuthForm() {
                 htmlType="submit"
                 className="ant-button"
                 block
+                disabled={isSubmitting}
               >
-                Log in
+                {isSubmitting ? "Submitting..":"Log in"}
               </Button>
               Don't have an account? <NavLink to="?mode=signup">signup</NavLink>
             </Form.Item>

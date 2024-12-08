@@ -98,7 +98,7 @@ export default function CourseModal({ visible, onCancel }) {
             },
           ]}
         >
-          <Input />
+          <Input.TextArea rows={4} />
         </Form.Item>
         <Form.Item
           name="image"

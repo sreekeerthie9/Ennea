@@ -1,21 +1,26 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { lazy, Suspense } from "react";
 import RootLayout from "./pages/Root";
 import { action as authAction } from "./pages/Authentication";
 import "antd/dist/reset.css";
 import { tokenLoader } from "./util/auth";
 import { action as logoutAction } from "./pages/logout";
-import AuthForm from "./components/AuthForm";
-import Courses from "./pages/Courses";
-import HomePage from "./pages/Home";
+import ConfigStyles from "./components/ConfigStyles";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./util/http";
-import CourseDetails from "./pages/CourseDetails";
-import NewOrEditCourse from "./pages/NewOrEditCourse";
-import ConfigStyles from "./components/ConfigStyles";
 import CourseContextProvider from "./context/course-context";
-import CategoryCourseList from "./pages/categoryCourseList";
-import ProfilePage from "./pages/Profile";
-import UserCourses from "./pages/UserCourses";
+import { LoadingOutlined } from "@ant-design/icons";
+import CourseDetails from "./pages/CourseDetails";
+
+const AuthForm = lazy(() => import("./components/AuthForm"));
+const Courses = lazy(() => import("./pages/Courses"));
+const HomePage = lazy(() => import("./pages/Home"));
+const NewOrEditCourse = lazy(() => import("./pages/NewOrEditCourse"));
+const ProfilePage = lazy(() => import("./pages/Profile"));
+const CategoryCourseList = lazy(() => import("./pages/CategoryCourseList"));
+const UserCourses = lazy(() => import("./pages/UserCourses"));
+
+const LoadingFallback = <LoadingOutlined spin />;
 
 const router = createBrowserRouter([
   {
@@ -26,41 +31,68 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: (
+          <Suspense fallback={LoadingFallback}>
+            <HomePage />
+          </Suspense>
+        ),
       },
       {
         path: "/courses",
-        element: <Courses />,
+        element: (
+          <Suspense fallback={LoadingFallback}>
+            <Courses />
+          </Suspense>
+        ),
       },
       {
         path: "/courses/category/:categoryName",
-        element: <CategoryCourseList />,
+        element: (
+          <Suspense fallback={LoadingFallback}>
+            <CategoryCourseList />
+          </Suspense>
+        ),
       },
       {
         path: "/courses/:id",
         element: <CourseDetails />,
       },
       {
-        path:"/user/mycourses",
-        element: <UserCourses/>
+        path: "/user/mycourses",
+        element: (
+          <Suspense fallback={LoadingFallback}>
+            <UserCourses />
+          </Suspense>
+        ),
       },
       {
-        path:"/profile",
-        element: <ProfilePage/>
+        path: "/user/profile",
+        element: (
+          <Suspense fallback={LoadingFallback}>
+            <ProfilePage />
+          </Suspense>
+        ),
       },
       {
         path: "/admin",
         children: [
           {
             path: "/admin/new",
-            element: <NewOrEditCourse />,
+            element: (
+              <Suspense fallback={LoadingFallback}>
+                <NewOrEditCourse />
+              </Suspense>
+            ),
           },
         ],
       },
-
       {
         path: "/auth",
-        element: <AuthForm />,
+        element: (
+          <Suspense fallback={LoadingFallback}>
+            <AuthForm />
+          </Suspense>
+        ),
         action: authAction,
       },
       {

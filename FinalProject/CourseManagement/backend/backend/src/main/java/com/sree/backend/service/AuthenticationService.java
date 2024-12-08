@@ -1,6 +1,6 @@
 package com.sree.backend.service;
 
-import com.sree.backend.contoller.AuthenticationRequest;
+import com.sree.backend.model.AuthenticationRequest;
 import com.sree.backend.contoller.AuthenticationResponse;
 import com.sree.backend.model.RegisterRequest;
 import com.sree.backend.model.Role;
@@ -28,6 +28,9 @@ public class AuthenticationService {
                 .lastname(request.getLastname())
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .email(request.getEmail())
+                .phone(request.getPhone())
+                .bio(request.getBio())
                 .role(Role.valueOf(request.getRole().toUpperCase()))
                 .build();
         userRepo.save(user);

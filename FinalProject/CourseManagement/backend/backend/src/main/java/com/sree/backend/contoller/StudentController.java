@@ -28,6 +28,10 @@ public class StudentController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         User student = userPrincipal.getUser();
+        int totalCourses = student.getCourses().size();
+        if(totalCourses >= 5) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Max limit of 5 courses reached");
+        }
         try{
             courseService.enrollCourse(courseId, student.getId());
             return ResponseEntity.ok("Enrolled successfully");
@@ -59,6 +63,15 @@ public class StudentController {
         User student = userPrincipal.getUser();
         StudentProfile studentProfile = studentService.getStudentProfile(student.getId());
         return ResponseEntity.ok(studentProfile);
+    }
+
+    @PutMapping("/profile/update")
+    public ResponseEntity<StudentProfile> updateProfile(@RequestBody StudentProfile studentProfile) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        User student = userPrincipal.getUser();
+        StudentProfile updatedProfile = studentService.updateStudentProfile(student.getId(), studentProfile);
+        return ResponseEntity.ok(updatedProfile);
     }
 
 }

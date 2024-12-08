@@ -7,18 +7,30 @@ import { LoadingOutlined } from "@ant-design/icons";
 const StyledContainer = styled.div`
   padding: 2rem;
   margin: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 70vh;
+  flex-grow: 1;
 `;
-const Heading = styled.h2`
+
+const Heading = styled.h3`
   color: #343a40;
   margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
 `;
+
 const CourseList = styled.ul`
   list-style: none;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-  gap: 3rem;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 2rem;
+  width: 100%;
+  max-width: 1200px;
 `;
+
 const CourseListItem = styled.li`
   display: flex;
   justify-content: center;
@@ -29,25 +41,29 @@ const ErrorMessage = styled.p`
   color: #e74c3c;
 `;
 
+const LoadingIcon = styled(LoadingOutlined)`
+  font-size: 2rem;
+  color: #1890ff;
+`;
+
 export default function Courses() {
   const { isLoading, error, searchResults } = useContext(CourseContext);
 
   let content;
 
   if (isLoading) {
-    content = <LoadingOutlined />;
-  }
-  if (error) {
+    content = <LoadingIcon spin />;
+  } else if (error) {
     content = <ErrorMessage>{error.info}</ErrorMessage>;
-  }
-
-  const displayedCourses = searchResults ? searchResults.filteredCourses : [];
-
-  if (searchResults) {
+  } else {
+    const displayedCourses = searchResults ? searchResults.filteredCourses : [];
     content = (
       <>
-        {searchResults.searchTerm && (
+        {searchResults?.searchTerm && displayedCourses.length > 0 &&(
           <Heading>Search results for "{searchResults.searchTerm}"</Heading>
+        )}
+        {searchResults?.searchTerm && displayedCourses.length === 0 &&(
+          <Heading>Sorry! No Search results for "{searchResults.searchTerm}"</Heading>
         )}
         <CourseList>
           {displayedCourses.map((course) => (

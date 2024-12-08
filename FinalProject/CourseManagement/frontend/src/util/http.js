@@ -54,7 +54,6 @@ export async function fetchAllCategories({ signal }) {
 }
 
 export async function fetchCategory(categoryName) {
- 
   const response = await fetch(
     `http://localhost:8080/courses/categories/${categoryName}`
   );
@@ -64,11 +63,12 @@ export async function fetchCategory(categoryName) {
     );
     error.code = response.status;
     error.info = await response.json();
+    console.log(error.code);
     throw error;
   }
 
   const courses = await response.json();
-  
+
   return courses;
 }
 
@@ -162,9 +162,10 @@ export async function getEnrolledStudents(courseId) {
   }
 
   const enrolledStudents = await response.json();
-  
+
   return enrolledStudents;
 }
+
 
 export async function enrollTOCourse(courseId) {
   const token = getAuthToken();
@@ -177,11 +178,16 @@ export async function enrollTOCourse(courseId) {
       },
     }
   );
-  
+
   if (!response.ok) {
-    const error = new Error("An error occurred while enrolling to the course");
+    const error = new Error("An error occurred while enrolling in the course");
     error.code = response.status;
-    error.info = await response.json();
+    try {
+      const errorInfo = await response.json();
+      error.info = errorInfo.message || errorInfo;
+    } catch (e) {
+      error.info = response.statusText;
+    }
     throw error;
   }
 
@@ -200,7 +206,7 @@ export async function unrollCourse(courseId) {
       },
     }
   );
-  
+
   if (!response.ok) {
     const error = new Error("An error occurred while deleting the course");
     error.code = response.status;
@@ -208,12 +214,13 @@ export async function unrollCourse(courseId) {
     throw error;
   }
   const data = await response.text();
-  
+
   return data;
 }
 
 export async function getProfile() {
   const token = getAuthToken();
+  
   const response = await fetch(`http://localhost:8080/student/profile`, {
     method: "GET",
     headers: {
@@ -229,6 +236,31 @@ export async function getProfile() {
   }
 
   const profile = await response.json();
-  
+
   return profile;
 }
+
+export async function updateProfile(values) {
+  const token = getAuthToken();
+  const response = await fetch(`http://localhost:8080/student/profile/update`, {
+    method: "PUT",
+    headers: {
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(values),
+  });
+
+  if (!response.ok) {
+    const error = new Error("An error occurred while deleting the course");
+    error.code = response.status;
+    error.info = await response.json();
+    throw error;
+  }
+
+  const profile = await response.json();
+
+  return profile;
+}
+
+

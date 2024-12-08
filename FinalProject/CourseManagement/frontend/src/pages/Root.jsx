@@ -2,6 +2,18 @@ import { Outlet, useLoaderData, useSubmit } from "react-router-dom";
 import MainNavigation from "../components/MainNavigation";
 import { useEffect } from "react";
 import { getTokenDuration } from "../util/auth";
+import Footer from "../components/Footer";
+import styled from "styled-components";
+
+const AppContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+`;
+
+const MainContent = styled.main`
+  flex: 1;
+`;
 
 export default function RootLayout() {
   const token = useLoaderData();
@@ -24,11 +36,12 @@ export default function RootLayout() {
     }, tokenDuration);
   }, [token, submit]);
   return (
-    <>
+    <AppContainer>
       <MainNavigation />
-      <main>
+      <MainContent>
         <Outlet />
-      </main>
-    </>
+      </MainContent>
+      <Footer />
+    </AppContainer>
   );
 }

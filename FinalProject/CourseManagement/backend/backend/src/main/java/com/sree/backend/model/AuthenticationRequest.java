@@ -1,4 +1,4 @@
-package com.sree.backend.contoller;
+package com.sree.backend.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
